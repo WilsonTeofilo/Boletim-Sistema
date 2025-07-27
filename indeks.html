@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  <h1 style="text-align: center;"> Ao iniciar a nota de um novo aluno CLICAR EM LIMPAR (se não fizer isso vai dar errado)</h1>
+
+  <fieldset>
+    Nome do aluno: <input type="text" name="nome" id="nome" autocomplete="new-password"> 
+    <select name="cursos" id="cursos">
+      <option value="" disabled selected hidden>Selecione o curso</option>
+<option  id="Ds" value="Ds">Desenvolvimento de sistemas</option>
+<option value="JG">Programação de jogos</option>
+ 
+
+                                                                        <!-- -->
+    </select>
+
+   
+   
+    <select name="ano" id="ano">
+
+    <option value="">2025</option>
+   </select>
+
+  </fieldset>
+
+
+  Nota 1BI: <input type="number" name="nota1" id="nota1" placeholder="digite uma nota de 1-10"> 
+  Nota 2BI: <input type="number" name="nota2" id="nota2"placeholder="digite uma nota de 1-10"> 
+  Nota 3BI: <input type="number" name="nota3" id="nota3"placeholder="digite uma nota de 1-10"> 
+  Nota 4BI: <input type="number" name="nota4" id="nota4"placeholder="digite uma nota de 1-10"> 
+  <div class="botoes">
+    <button onclick="média()">CALCULAR MÉDIA</button>
+    <button onclick="limpar()">LIMPAR</button>
+  </div>
+
+
+
+<table id="ADS">
+  <thead>
+    <th> ALUNO:</th>
+    <th> nota 1</th>
+    <th> nota 2</th>
+    <th> nota 3</th>
+    <th> nota 4</th>
+    <th> MÉDIA</th>
+    <th> aprovado?</th>
+  </thead>
+  
+  <tfoot>
+    <tr>
+      <td colspan="7" style="text-align: center; font-weight: bold;">CURSO DS</td>
+    </tr>
+  </tfoot>
+</table>
+
+<br><br><br>
+
+
+<table id="DSJogos">
+  <thead>
+    <th> ALUNO:</th>
+    <th> nota 1</th>
+    <th> nota 2</th>
+    <th> nota 3</th>
+    <th> nota 4</th>
+    <th> MÉDIA</th>
+    <th> aprovado?</th>
+  </thead>
+  
+  <tfoot>
+    <tr>
+      <td colspan="7" style="text-align: center; font-weight: bold;">PROGRAMAÇÃO DE JOGOS</td>
+    </tr>
+  </tfoot>
+</table>
+
+
+
+  
+</body>
+<script src="/scripiti.js"></script>
+</html>
