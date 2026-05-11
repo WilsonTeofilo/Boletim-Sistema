@@ -1,115 +1,199 @@
-const notas = []
-const nomeAluno = []
-let aprovado = ""
+// ===================================
+// BOLETIM ESCOLAR — scripiti.js
+// ===================================
 
+// Estado da aplicação
+let contadorDS = 0;
+let contadorJogos = 0;
 
-function média() {
-  let materia = window.document.getElementById("cursos").value
-  if (
-    window.document.getElementById("nota1").value === "" ||
-    window.document.getElementById("nota2").value === "" ||
-    window.document.getElementById("nota3").value === "" ||  // comparação pra ver se tem algum valor vazio, caso tiver brecar
-    window.document.getElementById("nota4").value === "" ||
-    window.document.getElementById("nome").value === "" ) {
-    window.alert("Campo vazio, complete para prosseguir");
+/**
+ * Exibe uma notificação toast na tela.
+ * @param {string} message - Texto da notificação
+ * @param {"success"|"error"|"warning"} type - Tipo do toast
+ */
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  const icon = document.getElementById("toast-icon");
+  const msg = document.getElementById("toast-msg");
+
+  const icons = {
+    success: "✅",
+    error: "❌",
+    warning: "⚠️",
+  };
+
+  icon.textContent = icons[type] || "ℹ️";
+  msg.textContent = message;
+
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
+/**
+ * Atualiza os badges de contagem e a visibilidade das tabelas.
+ */
+function atualizarUI() {
+  // Badge de contagem
+  const badgeDS = document.getElementById("badge-ds");
+  const badgeJogos = document.getElementById("badge-jogos");
+  badgeDS.textContent = `${contadorDS} aluno${contadorDS !== 1 ? "s" : ""}`;
+  badgeJogos.textContent = `${contadorJogos} aluno${contadorJogos !== 1 ? "s" : ""}`;
+
+  // Mostrar/esconder tabelas e empty states
+  const tabelaDS = document.getElementById("ADS");
+  const tabelaJogos = document.getElementById("DSJogos");
+  const emptyDS = document.getElementById("empty-ds");
+  const emptyJogos = document.getElementById("empty-jogos");
+
+  if (contadorDS > 0) {
+    tabelaDS.classList.add("has-rows");
+    emptyDS.classList.add("hidden");
   } else {
-    let N1 = Number(window.document.getElementById("nota1").value);
-    let N2 = Number(window.document.getElementById("nota2").value);   //se nenhum valor tiver vazio segue criando as conversões de todos os inputs de notas para number, e crio name.
-    let N3 = Number(window.document.getElementById("nota3").value);
-    let N4 = Number(window.document.getElementById("nota4").value);
-   let nomeReal= (window.document.getElementById("nome").value)
-
-
- if  (N1 > 10 || N2 > 10 || N3 > 10 || N4 > 10 ||     //aqui em base dos numeros que foram criados vai ter uma validação dentro do else, ver se os 4 numeros são validos.
-   N1 < 0  || N2 < 0  || N3 < 0  || N4 < 0){
-  window.alert("Nota deve ser entre 0 - 10")
- }else{
-  notas.push(N1,N2,N3,N4)         // não deu errado, então segue o fluxo!; empurra as notas pra posição dos vetores e também empurra o nome pra dentro do vetor, cria a a nota média.
-  nomeAluno.push(nomeReal)
-  let soma = N1+N2+N3+N4
-  let notamedia = soma/4
-  let ultimoNome = nomeAluno[nomeAluno.length -1]
-
-    if(notamedia>6 ){
-      aprovado = "Aprovado" 
-    }else{                              //compara se a nota média é >6, se for passou se não, reprovou.
-      aprovado ="Reprovado"
-    }
-
-
-    if (materia ==="Ds"){  //seleciona a variavel materia que pegou o VALUE DE SELECT, PORÉM, o value de select maioria das vezes é o propio option. se o select === value option ds
-                          // tudo que foi digitado até então vai ser empurrado pra tabela do curso DE DESENVOLVIMENTO DE SISTEMAS. e dps no else if o vice e versa (programação jogo)
-  
-
-    let resultado = window.document.getElementById("ADS")
-    let bári = window.document.createElement("tbody")
-    let linhas = window.document.createElement("tr")
-    
-    linhas.innerHTML= `
-     <td>${ultimoNome}</td>
-     <td> ${nomeAluno.indexOf(ultimoNome)}
-      <td> ${N1}</td>
-        <td> ${N2}</td>
-          <td> ${N3}</td>
-            <td> ${N4}</td>
-              <td> ${notamedia}</td>
-                <td> ${aprovado}</td>    
-     
-     `
-
-
-     bári.append(linhas)
-     resultado.appendChild(bári)
- 
-    } else if (materia === "JG"){
-      let resultado2 = window.document.getElementById("DSJogos")
-      let tbare = window.document.createElement("tbody")
-      let têérri = window.document.createElement("tr")
-
-      têérri.innerHTML= `
-   
-     <td>${ultimoNome}</td>
-     <td> ${nomeAluno.indexOf(ultimoNome)}
-      <td> ${N1}</td>
-        <td> ${N2}</td>
-          <td> ${N3}</td>
-            <td> ${N4}</td>
-              <td> ${notamedia}</td>
-                <td> ${aprovado}</td>
-                  `
-                 
-                
-     
-     
-     
-     
-     tbare.appendChild(têérri)
-     resultado2.appendChild(tbare)
-
-
-    }else if (materia ===""){
-      window.alert("SELECIONE O CURSO")
-    }
-
-
-  }
-    }
+    tabelaDS.classList.remove("has-rows");
+    emptyDS.classList.remove("hidden");
   }
 
+  if (contadorJogos > 0) {
+    tabelaJogos.classList.add("has-rows");
+    emptyJogos.classList.add("hidden");
+  } else {
+    tabelaJogos.classList.remove("has-rows");
+    emptyJogos.classList.remove("hidden");
+  }
+}
 
+/**
+ * Calcula a média do aluno e insere na tabela correta.
+ */
+function calcularMedia() {
+  const nomeInput = document.getElementById("nome");
+  const cursoInput = document.getElementById("cursos");
+  const n1Input = document.getElementById("nota1");
+  const n2Input = document.getElementById("nota2");
+  const n3Input = document.getElementById("nota3");
+  const n4Input = document.getElementById("nota4");
 
+  const nome = nomeInput.value.trim();
+  const curso = cursoInput.value;
+  const N1 = n1Input.value;
+  const N2 = n2Input.value;
+  const N3 = n3Input.value;
+  const N4 = n4Input.value;
 
-
-
-
-
-  function limpar() {            
-    notas.length = 0;
-    nomeAluno.value = "";
-    
-    document.getElementById("nota1").value = "";
-    document.getElementById("nota2").value = "";
-    document.getElementById("nota3").value = "";
-    document.getElementById("nota4").value = "";
+  // Validação: campos vazios
+  if (!nome) {
+    showToast("Preencha o nome do aluno.", "warning");
+    nomeInput.focus();
+    return;
   }
 
+  if (!curso) {
+    showToast("Selecione o curso.", "warning");
+    cursoInput.focus();
+    return;
+  }
+
+  if (N1 === "" || N2 === "" || N3 === "" || N4 === "") {
+    showToast("Preencha todas as 4 notas.", "warning");
+    return;
+  }
+
+  const nota1 = Number(N1);
+  const nota2 = Number(N2);
+  const nota3 = Number(N3);
+  const nota4 = Number(N4);
+
+  // Validação: notas entre 0 e 10
+  if (
+    nota1 < 0 || nota1 > 10 ||
+    nota2 < 0 || nota2 > 10 ||
+    nota3 < 0 || nota3 > 10 ||
+    nota4 < 0 || nota4 > 10
+  ) {
+    showToast("As notas devem estar entre 0 e 10.", "error");
+    return;
+  }
+
+  // Cálculo da média
+  const media = (nota1 + nota2 + nota3 + nota4) / 4;
+  const mediaFormatada = media.toFixed(1);
+  const aprovado = media >= 6;
+  const situacao = aprovado ? "Aprovado" : "Reprovado";
+  const statusClass = aprovado ? "status-aprovado" : "status-reprovado";
+
+  // Escolher tabela correta
+  let tbodyId, targetSectionId;
+  if (curso === "Ds") {
+    contadorDS++;
+    tbodyId = "tbody-ds";
+    targetSectionId = "section-ds";
+  } else if (curso === "JG") {
+    contadorJogos++;
+    tbodyId = "tbody-jogos";
+    targetSectionId = "section-jogos";
+  }
+
+  const idAluno = curso === "Ds" ? contadorDS : contadorJogos;
+
+  // Criar a linha
+  const tbody = document.getElementById(tbodyId);
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td>${nome}</td>
+    <td>${idAluno}</td>
+    <td>${nota1}</td>
+    <td>${nota2}</td>
+    <td>${nota3}</td>
+    <td>${nota4}</td>
+    <td>${mediaFormatada}</td>
+    <td><span class="status ${statusClass}">${situacao}</span></td>
+  `;
+
+  tbody.appendChild(tr);
+
+  // Atualizar interface
+  atualizarUI();
+
+  // Toast de sucesso
+  const emoji = aprovado ? "🎉" : "📉";
+  showToast(
+    `${nome} — Média: ${mediaFormatada} (${situacao}) ${emoji}`,
+    aprovado ? "success" : "error"
+  );
+
+  // Scroll suave até a seção da tabela
+  const targetSection = document.getElementById(targetSectionId);
+  targetSection.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // Limpar apenas os campos de nota e nome para facilitar novo cadastro
+  nomeInput.value = "";
+  n1Input.value = "";
+  n2Input.value = "";
+  n3Input.value = "";
+  n4Input.value = "";
+  nomeInput.focus();
+}
+
+/**
+ * Limpa todos os campos do formulário.
+ */
+function limpar() {
+  document.getElementById("nome").value = "";
+  document.getElementById("cursos").selectedIndex = 0;
+  document.getElementById("nota1").value = "";
+  document.getElementById("nota2").value = "";
+  document.getElementById("nota3").value = "";
+  document.getElementById("nota4").value = "";
+
+  document.getElementById("nome").focus();
+  showToast("Formulário limpo.", "success");
+}
+
+// Inicializar UI ao carregar
+document.addEventListener("DOMContentLoaded", () => {
+  atualizarUI();
+});
